@@ -72,9 +72,10 @@ header {
 .ventana-flotante {
   position: fixed; /* flotante */
   top: 30%;
-  left: 50%;
+  left: 40%;
   background-color: white;
   padding: 20px;
+  border: 2px solid #2196F3;
   border-radius: 10px;
   z-index: 999; /* posición por encima de resto de elementos */
   width: 250px;
@@ -83,6 +84,13 @@ header {
   align-items: center;
   justify-content: center;
 }
+
+
+.heart {
+  position: relative;
+  left: 110px;
+}
+
 
 .detalle-pokemon {
   display: flex;
@@ -100,6 +108,7 @@ li {
 
 h2, p {
   text-align: center;
+  text-transform: capitalize;
   color:#f37021;
   margin: 5px
 }
