@@ -28,7 +28,10 @@ const listaPokemons = document.getElementById('app');
 const favoritesDiv = document.getElementById('favorites');
 const favoritesList = document.getElementById('favorites-list');
 
-
+//localStorage.clear();
+let favoritesPokemons = JSON.parse(localStorage.getItem("Pokemon")) || [];
+let heartsArr = JSON.parse(localStorage.getItem("Hearts")) || [];
+console.log(favoritesPokemons)
 
 /****************************
 1. OBTENER lista de Pokemons
@@ -67,19 +70,19 @@ const mostrarListaPokemons = async (pokemons) => {
             const pokemonData = await pokemonResponse.json();
           
             const contenedorUl = document.createElement('ul');
-        const contenedorPokemon = document.createElement('li');
-        contenedorPokemon.classList.add('pokemon');
-        contenedorPokemon.innerHTML = `
-            <h2>${pokemon.name}</h2>
-            <img class = "imagenPerdida" src= "${pokemonData.sprites.other.home.front_default}" alt= "${pokemon.name}"/>`;
+            const contenedorPokemon = document.createElement('li');
+            contenedorPokemon.classList.add('pokemon');
+            contenedorPokemon.innerHTML = `
+                <h2>${pokemon.name}</h2>
+                <img class = "imagenPerdida" src= "${pokemonData.sprites.other.home.front_default}" alt= "${pokemon.name}"/>`;
 
-            contenedorUl.appendChild(contenedorPokemon)
-            listaPokemons.appendChild(contenedorUl);
+                contenedorUl.appendChild(contenedorPokemon)
+                listaPokemons.appendChild(contenedorUl);
 
-        // evento para ver detalle de un Pokemon desde la lista
-        contenedorPokemon.addEventListener('click', () => {
-            obtenerDetallePokemon(pokemon.name);
-        });
+            // evento para ver detalle de un Pokemon desde la lista
+            contenedorPokemon.addEventListener('click', () => {
+                obtenerDetallePokemon(pokemon.name);
+            });
     })
 };
 
@@ -110,13 +113,15 @@ obtenerDetallePokemon();
 4. MOSTRAR detalle cada Pokemon
 *****************************/
 const mostrarDetallePokemon = (pokemon) => {
+    JSON.parse(localStorage.getItem("Pokemon"));
     /* ***** */ console.log('🟢 Detalle pokemon ventana flotante', pokemon); 
 
     const ventanaFlotante = document.createElement('div');
     ventanaFlotante.classList.add('ventana-flotante');
     ventanaFlotante.innerHTML = `
         <div class="detalle-pokemon">
-        <img class="heart" src="./assets/img/heart.png"width="20">
+        <img class="heart white" src="./assets/img/heart.png"width="20">
+        <img class="heart red" src="./assets/img/redHeart.png"width="30" style="display: none">
             <h2>${pokemon.name}</h2>
             <img src="${pokemon.sprites.other.home.front_default}" alt="${pokemon.name}" width="170" class="poke-img"> 
             <p><b>Altura:</b> ${pokemon.height / 10} m</p>
@@ -127,59 +132,66 @@ const mostrarDetallePokemon = (pokemon) => {
 
     document.body.appendChild(ventanaFlotante);
 
-    const botonFavorito = ventanaFlotante.querySelector('.heart');
+    const noFavoriteBtn = ventanaFlotante.querySelector('.white');
+    const setFavoriteBtn = ventanaFlotante.querySelector('.red');
+    
     const addFavorite = () => {
-        botonFavorito.addEventListener('click', () => {
-            botonFavorito.style.display = 'none';
-            ventanaFlotante.innerHTML = `
-            <div class="detalle-pokemon">
-                <img class="redheart" src="./assets/img/redHeart.png"width="30">
-                <h2>${pokemon.name}</h2>
-                <img src="${pokemon.sprites.other.home.front_default}" alt="${pokemon.name}" width="170" class="poke-img"> 
-                <p><b>Altura:</b> ${pokemon.height / 10} m</p>
-                <p><b>Peso:</b> ${pokemon.weight / 10} kg</p>
-                <button class="cerrar-pokemon">Cerrar</button>
-            </div>
-        `;
-            closeWindow();
-            localStorage.setItem('Pokemon', ventanaFlotante);
-            removeFavorite();
+        noFavoriteBtn.addEventListener('click', () => {
+            noFavoriteBtn.style.display = 'none';
+            setFavoriteBtn.style.display = 'block';
+            
+            let favoritePokemon = {
+                nombre: `${pokemon.name}`,
+                img: `<img src="${pokemon.sprites.other.home.front_default}" alt="${pokemon.name}" width="170" class="poke-img">`,
+                height: `<p><b>Altura:</b> ${pokemon.height / 10} m</p>`,
+                weight: `<p><b>Peso:</b> ${pokemon.weight / 10} kg</p>`,
+            }
+
+          /*   let favoritesWithHearts = {
+                heart: '<img class="heart red" src="./assets/img/redHeart.png"width="30"></img>',
+                name: `${pokemon.name}`,
+            } */
+
+           favoritesPokemons.push(favoritePokemon);
+           //favoritesWithHearts.push(heartsArr);
+           
+           localStorage.setItem("Pokemon", JSON.stringify(favoritesPokemons));
+           //localStorage.setItem("Hearts", JSON.stringify(favoritesWithHearts));
+           
         });
     }
     addFavorite();
-
-    const quitarFavorito = ventanaFlotante.querySelector('.redheart');
+    
     const removeFavorite = () => {
-        quitarFavorito.addEventListener('click', () => {
-            quitarFavorito.style.display = 'none';
-            ventanaFlotante.innerHTML = `
-            <div class="detalle-pokemon">
-                <img class="heart" src="./assets/img/heart.png"width="30">
-                <h2>${pokemon.name}</h2>
-                <img src="${pokemon.sprites.other.home.front_default}" alt="${pokemon.name}" width="170" class="poke-img"> 
-                <p><b>Altura:</b> ${pokemon.height / 10} m</p>
-                <p><b>Peso:</b> ${pokemon.weight / 10} kg</p>
-                <button class="cerrar-pokemon">Cerrar</button>
-            </div>
-        `;
-            closeWindow();
+        setFavoriteBtn.addEventListener('click', () => {
+            getFavorites();
+            noFavoriteBtn.style.display = 'block';
+            setFavoriteBtn.style.display = 'none';
+        
             localStorage.removeItem('Pokemon');
-            addFavorite();
+        
         });
     }
     removeFavorite();
 
+    /* const showHearts = () => {
+        heartsArr.forEach(heart => {
+            
+        }) 
+    } */
+
     const closeWindow = () => {
-    const botonCerrar = ventanaFlotante.querySelector('.cerrar-pokemon');
-    botonCerrar.addEventListener('click', () => {
-        document.body.removeChild(ventanaFlotante);
+        const botonCerrar = ventanaFlotante.querySelector('.cerrar-pokemon');
+        botonCerrar.addEventListener('click', () => {
+            document.body.removeChild(ventanaFlotante);
     });
 }
 
+closeWindow();
 
 botonResetear.addEventListener('click', async () => {
     pokemonInput.value = '';
-        document.body.removeChild(ventanaFlotante);
+    document.body.removeChild(ventanaFlotante);
     });
 };
 
@@ -215,6 +227,16 @@ pokemonInput.addEventListener('keypress', (e) => {
         obtenerDetallePokemon(buscarPokemon);  
     }
 });
+
+/****************************
+7. Ir a la página de favoritos
+*****************************/
+
+const misFavoritos = document.createElement('a');
+misFavoritos.textContent = 'Mis favoritos';
+misFavoritos.href = './favoritos.html';
+document.body.appendChild(misFavoritos);
+
 
 /****************************
 **********BONUS**************
