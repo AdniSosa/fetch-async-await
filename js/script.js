@@ -29,6 +29,7 @@ const favoritesDiv = document.getElementById('favorites');
 const favoritesList = document.getElementById('favorites-list');
 
 
+
 /****************************
 1. OBTENER lista de Pokemons
 *****************************/
@@ -57,23 +58,23 @@ obtenerlistaPokemons();
 2. MOSTRAR lista de Pokemons
 *****************************/
 const mostrarListaPokemons = async (pokemons) => {
-    
+   
     listaPokemons.innerHTML = ''; 
     
-    pokemons.forEach(async(pokemon) =>  {
+        pokemons.forEach(async(pokemon) =>  {
 
-        const pokemonResponse = await fetch(pokemon.url);
-        const pokemonData = await pokemonResponse.json();
-      
-        const contenedorUl = document.createElement('ul');
+            const pokemonResponse = await fetch(pokemon.url);
+            const pokemonData = await pokemonResponse.json();
+          
+            const contenedorUl = document.createElement('ul');
         const contenedorPokemon = document.createElement('li');
         contenedorPokemon.classList.add('pokemon');
         contenedorPokemon.innerHTML = `
             <h2>${pokemon.name}</h2>
             <img class = "imagenPerdida" src= "${pokemonData.sprites.other.home.front_default}" alt= "${pokemon.name}"/>`;
 
-        contenedorUl.appendChild(contenedorPokemon)
-        listaPokemons.appendChild(contenedorUl);
+            contenedorUl.appendChild(contenedorPokemon)
+            listaPokemons.appendChild(contenedorUl);
 
         // evento para ver detalle de un Pokemon desde la lista
         contenedorPokemon.addEventListener('click', () => {
@@ -109,12 +110,13 @@ obtenerDetallePokemon();
 4. MOSTRAR detalle cada Pokemon
 *****************************/
 const mostrarDetallePokemon = (pokemon) => {
+    /* ***** */ console.log('🟢 Detalle pokemon ventana flotante', pokemon); 
 
     const ventanaFlotante = document.createElement('div');
     ventanaFlotante.classList.add('ventana-flotante');
     ventanaFlotante.innerHTML = `
         <div class="detalle-pokemon">
-            <img class="heart" src="./assets/img/heart.png"width="20">
+        <img class="heart" src="./assets/img/heart.png"width="20">
             <h2>${pokemon.name}</h2>
             <img src="${pokemon.sprites.other.home.front_default}" alt="${pokemon.name}" width="170" class="poke-img"> 
             <p><b>Altura:</b> ${pokemon.height / 10} m</p>
@@ -168,15 +170,15 @@ const mostrarDetallePokemon = (pokemon) => {
     removeFavorite();
 
     const closeWindow = () => {
-        const botonCerrar = ventanaFlotante.querySelector('.cerrar-pokemon');
-        botonCerrar.addEventListener('click', () => {
-            document.body.removeChild(ventanaFlotante);
-        });
-    }
-   
+    const botonCerrar = ventanaFlotante.querySelector('.cerrar-pokemon');
+    botonCerrar.addEventListener('click', () => {
+        document.body.removeChild(ventanaFlotante);
+    });
+}
 
-    botonResetear.addEventListener('click', async () => {
-        pokemonInput.value = '';
+
+botonResetear.addEventListener('click', async () => {
+    pokemonInput.value = '';
         document.body.removeChild(ventanaFlotante);
     });
 };
