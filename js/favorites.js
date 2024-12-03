@@ -18,21 +18,22 @@ const getFavorites = () => {
             </li>
             `  
          
-        const deleteFavorite = () => {
+        
             const deleteBtn = favoritesList.querySelector('.delete'); 
 
-            deleteBtn.addEventListener('click', (event) => {
-                favoritesPokemons = JSON.parse(localStorage.getItem('Pokemon'));
-                let indexFavorito = favoritesPokemons.findIndex(pokemon => pokemon.name === `${pokemon.nombre}`);
-                console.log(indexFavorito)
-                favoritesPokemons.splice(indexFavorito, 1);
-                localStorage.setItem("Pokemon", JSON.stringify(favoritesPokemons));
-                event.target.parentNode.remove()
+            deleteBtn.addEventListener('click', () => {
+               deletePokemon(pokemon.nombre);
+                
             })
-            deleteFavorite();
-        }
-     });
-    
+    })
+}
+
+const deletePokemon = (nombrePokemon) => {
+    favoritesPokemons = JSON.parse(localStorage.getItem('Pokemon'));
+    let indexFavorito = favoritesPokemons.findIndex(pokemon => pokemon.name === nombrePokemon);
+    console.log(indexFavorito)
+    favoritesPokemons.splice(indexFavorito, 1);
+    localStorage.setItem("Pokemon", JSON.stringify(favoritesPokemons));
 }
 
 getFavorites();
